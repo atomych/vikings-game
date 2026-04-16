@@ -9,7 +9,7 @@ class IntroScene(Scene):
         super().__init__("Intro", scene_manager)
         self._cap = None  # VideoCapture от OpenCV
         self._frame_surface = None
-        self._fps = 60.0
+        self._fps = 30.0
         self._frame_timer = 0.0  # накопленное время до следующего кадра
         self._target_size = None  # целевой размер экрана
         self._use_smooth_scaling = True  # использовать сглаживание
@@ -33,7 +33,7 @@ class IntroScene(Scene):
 
         self._cap = cv2.VideoCapture("assets/video/intro.mp4")
         if self._cap.isOpened():
-            self._fps = self._cap.get(cv2.CAP_PROP_FPS) or 60.0
+            self._fps = self._cap.get(cv2.CAP_PROP_FPS) or 30.0
 
             # Получаем оригинальное разрешение видео
             orig_width = int(self._cap.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -121,7 +121,7 @@ class IntroScene(Scene):
 
             # Масштабируем с высоким качеством через OpenCV
             frame_resized = cv2.resize(frame_rgb, (new_w, new_h),
-                                       interpolation=cv2.INTER_LANCZOS4)
+                                       interpolation=cv2.INTER_LINEAR)
 
             # Создаем черный фон и центрируем видео
             if (new_w, new_h) != self._target_size:
@@ -140,9 +140,9 @@ class IntroScene(Scene):
         surf = pygame.surfarray.make_surface(frame_rgb.swapaxes(0, 1))
 
         # Дополнительное сглаживание через pygame если нужно
-        if self._use_smooth_scaling and surf.get_size() != self._target_size:
-            # Используем smoothscale для лучшего качества
-            surf = pygame.transform.smoothscale(surf, self._target_size)
+        # if self._use_smooth_scaling and surf.get_size() != self._target_size:
+        #     # Используем smoothscale для лучшего качества
+        #     surf = pygame.transform.smoothscale(surf, self._target_size)
 
         self._frame_surface = surf
         return False
